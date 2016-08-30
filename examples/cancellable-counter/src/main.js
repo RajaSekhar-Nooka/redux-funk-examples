@@ -1,24 +1,21 @@
 /*eslint-disable no-unused-vars*/
 import "babel-polyfill"
-
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import sagaMonitor from '../../sagaMonitor'
-
+import { runFunks } from 'redux-funk'
 import reducer from './reducers'
-import rootSaga from './sagas'
 import Counter from './components/Counter'
+import loggerMiddleware from './loggerMiddleware'
 
-
-const sagaMiddleware = createSagaMiddleware({sagaMonitor})
 const store = createStore(
   reducer,
-  applyMiddleware(sagaMiddleware)
+  window.devToolsExtension && window.devToolsExtension(),
+  applyMiddleware(loggerMiddleware)
 )
-sagaMiddleware.run(rootSaga)
+
+runFunks(store)
 
 render(
   <Provider store={store}>

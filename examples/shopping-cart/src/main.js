@@ -4,19 +4,16 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import App from './components/App'
-
-import { createStore, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
+import { runFunks } from 'redux-funk'
+import { createStore } from 'redux'
 import rootReducer from './reducers'
-import rootSaga from './sagas'
-import sagaMonitor from '../../sagaMonitor'
 
-const sagaMiddleware = createSagaMiddleware({sagaMonitor})
 const store = createStore(
   rootReducer,
-  applyMiddleware(sagaMiddleware)
+  window.devToolsExtension && window.devToolsExtension()
 )
-sagaMiddleware.run(rootSaga)
+
+runFunks(store)
 
 render(
   <Provider store={store}>

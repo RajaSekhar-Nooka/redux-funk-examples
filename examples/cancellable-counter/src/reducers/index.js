@@ -1,9 +1,11 @@
+import { coalesceFunks } from 'redux-funk'
 import { combineReducers } from 'redux'
 import { counter, countdown } from './counter'
 
-const rootReducer = combineReducers({
+const rootReducer = coalesceFunks(combineReducers({
   countdown,
-  counter
-})
+  counter,
+  funks: () => []
+}))
 
 export default rootReducer

@@ -4,10 +4,10 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import App from './containers/App'
 import configureStore from './store/configureStore'
-import rootSaga from './sagas'
+import { runFunks } from 'redux-funk'
 
 const store = configureStore()
-store.runSaga(rootSaga)
+runFunks(store)
 
 render(
   <Provider store={store}>

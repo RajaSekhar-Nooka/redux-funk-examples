@@ -13,11 +13,11 @@ export const api = {
     })
   },
 
-  buyProducts(cart) {
+  buyProducts(quantityById) {
     return new Promise( (resolve, reject) =>
         setTimeout(() => {
-          if(Object.keys(cart.quantityById).length <= MAX_CHECKOUT)
-            resolve(cart)
+          if(Object.keys(quantityById).length <= MAX_CHECKOUT)
+            resolve()
           else
             reject(`You can buy ${MAX_CHECKOUT} items at maximum in a checkout`)
         }, TIMEOUT)

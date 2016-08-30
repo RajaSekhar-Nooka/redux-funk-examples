@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { ADD_TO_CART } from '../actions'
+import { coalesceFunks } from 'redux-funk'
 import { default as cart, getQuantity, getAddedIds } from './cart'
 import { default as products, getProduct } from './products'
 
@@ -8,11 +8,11 @@ export function getCart(state) {
 }
 
 export function getCheckoutError(state) {
-  return state.cart.checkoutStatus.error
+  return state.cart.error
 }
 
 export function isCheckoutPending(state) {
-  return state.cart.checkoutStatus.checkoutPending
+  return state.cart.status === 'PENDING'
 }
 
 export function getTotal(state) {
@@ -29,14 +29,16 @@ export function getCartProducts(state) {
   }))
 }
 
-const shoppingCart = combineReducers({
+const shoppingCart = coalesceFunks(combineReducers({
   cart,
-  products
-})
+  products,
+  funks: () => []
+}))
 
-export default function root(state, action) {
-  if(action.type === ADD_TO_CART && state.products.byId[action.productId].inventory <= 0)
-    return state;
+export default shoppingCart
+// export default function root(state, action) {
+//   if(action.type === ADD_TO_CART && state.products.byId[action.productId].inventory <= 0)
+//     return state;
 
-  return shoppingCart(state, action)
-}
+//   return shoppingCart(state, action)
+// }

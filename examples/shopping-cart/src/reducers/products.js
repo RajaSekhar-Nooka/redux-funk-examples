@@ -1,8 +1,25 @@
 import { combineReducers } from 'redux'
-import { RECEIVE_PRODUCTS, ADD_TO_CART, REMOVE_FROM_CART } from '../actions'
+import { call } from 'redux-funk'
+import {
+  GET_ALL_PRODUCTS,
+  receiveProducts,
+  RECEIVE_PRODUCTS,
+  ADD_TO_CART,
+  REMOVE_FROM_CART
+} from '../actions'
 
-function products(state, action) {
+import { api } from '../services'
+
+// export for testing
+export const getAllProducts = (getProducts=api.getProducts) => {
+  return getProducts()
+          .then(receiveProducts)
+}
+
+function products(state = {inventory: 3}, action) {
   switch (action.type) {
+    case GET_ALL_PRODUCTS:
+      return state
     case ADD_TO_CART:
       return {
         ...state,
@@ -20,6 +37,9 @@ function products(state, action) {
 
 function byId(state = {}, action) {
   switch (action.type) {
+    case GET_ALL_PRODUCTS:
+      call(action, [getAllProducts, []])
+      return state
     case RECEIVE_PRODUCTS:
       return {
         ...state,
@@ -51,7 +71,8 @@ function visibleIds(state = [], action) {
 
 export default combineReducers({
   byId,
-  visibleIds
+  visibleIds,
+  products
 })
 
 export function getProduct(state, id) {

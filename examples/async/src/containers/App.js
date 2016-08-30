@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { selectReddit, invalidateReddit } from '../actions'
+import { requestPosts, selectReddit } from '../actions'
 import Picker from '../components/Picker'
 import Posts from '../components/Posts'
 
@@ -11,14 +11,21 @@ class App extends Component {
     this.handleRefreshClick = this.handleRefreshClick.bind(this)
   }
 
+  componentWillMount() {
+    const { dispatch, selectedReddit } = this.props
+    dispatch(requestPosts(selectedReddit))
+  }
+
   handleChange(nextReddit) {
-    this.props.dispatch(selectReddit(nextReddit))
+    const { dispatch } = this.props
+    dispatch(selectReddit(nextReddit))
+    dispatch(requestPosts(nextReddit))
   }
 
   handleRefreshClick(e) {
     e.preventDefault()
     const { dispatch, selectedReddit } = this.props
-    dispatch(invalidateReddit(selectedReddit))
+    dispatch(requestPosts(selectedReddit))
   }
 
   render() {

@@ -1,9 +1,25 @@
 import { combineReducers } from 'redux'
+import { coalesceFunks, call } from 'redux-funk'
 import {
   SELECT_REDDIT,
   REQUEST_POSTS,
+  receivePosts,
   RECEIVE_POSTS
 } from '../actions'
+import * as api from '../services/postsApi'
+const errHandler = err => {
+  console.error(err)
+  return {type: "ERR", payload: err}
+}
+
+
+export const getPosts = (reddit, fetchPosts=api.fetchPosts) => {
+  return fetchPosts(reddit)
+    .then(posts => {
+        return receivePosts(reddit, posts)
+    })
+    .catch(errHandler)
+}
 
 function selectedReddit(state = 'reactjs', action) {
   switch (action.type) {
@@ -36,6 +52,7 @@ function posts(state = {
 function postsByReddit(state = { }, action) {
   switch (action.type) {
     case REQUEST_POSTS:
+      call(action, [getPosts, [action.reddit]])
     case RECEIVE_POSTS:
       return { ...state,
         [action.reddit]: posts(state[action.reddit], action)
@@ -47,7 +64,8 @@ function postsByReddit(state = { }, action) {
 
 const rootReducer = combineReducers({
   postsByReddit,
-  selectedReddit
+  selectedReddit,
+  funks: () => true
 })
 
-export default rootReducer
+export default coalesceFunks(rootReducer)

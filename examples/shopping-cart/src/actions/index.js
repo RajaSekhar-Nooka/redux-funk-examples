@@ -42,10 +42,9 @@ export function checkout() {
   }
 }
 
-export function checkoutSuccess(cart) {
+export function checkoutSuccess() {
   return {
-    type: CHECKOUT_SUCCESS,
-    cart
+    type: CHECKOUT_SUCCESS
   }
 }
 
