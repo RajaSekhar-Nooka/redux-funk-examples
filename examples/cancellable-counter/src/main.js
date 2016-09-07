@@ -18,10 +18,8 @@ const sagaMiddleware = createSagaMiddleware({sagaMonitor})
 const store = createStore(
   reducer,
   window.devToolsExtension && window.devToolsExtension(),
-  applyMiddleware(actionSideEffectMiddleware),
-  applyMiddleware(sagaMiddleware)
+  applyMiddleware(actionSideEffectMiddleware)
 )
-sagaMiddleware.run(rootSaga)
 
 render(
   <Provider store={store}>
