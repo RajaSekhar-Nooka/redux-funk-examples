@@ -1,18 +1,20 @@
 import { combineReducers } from 'redux'
 import {
+  STARTUP,
   SELECT_REDDIT,
+  INVALIDATE_REDDIT,
   REQUEST_POSTS,
   RECEIVE_POSTS
 } from '../actions'
 
-function selectedReddit(state = 'reactjs', action) {
-  switch (action.type) {
-    case SELECT_REDDIT:
-      return action.reddit
-    default:
-      return state
-  }
-}
+import {
+  fetchPosts
+} from "../side-effects"
+
+import {
+  selectedRedditSelector
+} from './selectors'
+
 
 function posts(state = {
   isFetching: false,
@@ -33,21 +35,30 @@ function posts(state = {
   }
 }
 
-function postsByReddit(state = { }, action) {
+function rootReducer(state = {selectedReddit: 'reactjs', postsByReddit: {} }, action) {
   switch (action.type) {
+    case STARTUP:
+      action.sideEffect(fetchPosts(state.selectedReddit))
+      return state
+    case SELECT_REDDIT:
+      const isCached = state.postsByReddit[action.reddit]
+      if (!isCached) {
+        action.sideEffect(fetchPosts(action.reddit))
+      }
+      return { ...state, selectedReddit: action.reddit}
+    case INVALIDATE_REDDIT:
+      action.sideEffect(fetchPosts(action.reddit))
+      return state
     case REQUEST_POSTS:
     case RECEIVE_POSTS:
       return { ...state,
-        [action.reddit]: posts(state[action.reddit], action)
+        postsByReddit: {
+          [action.reddit]: posts(state[action.reddit], action)
+        }
       }
     default:
       return state
   }
 }
-
-const rootReducer = combineReducers({
-  postsByReddit,
-  selectedReddit
-})
 
 export default rootReducer

@@ -7,7 +7,6 @@ import configureStore from './store/configureStore'
 import rootSaga from './sagas'
 
 const store = configureStore()
-store.runSaga(rootSaga)
 
 render(
   <Provider store={store}>

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { selectReddit, invalidateReddit } from '../actions'
+import { startup, selectReddit, invalidateReddit } from '../actions'
 import Picker from '../components/Picker'
 import Posts from '../components/Posts'
 
@@ -9,6 +9,11 @@ class App extends Component {
     super(props)
     this.handleChange = this.handleChange.bind(this)
     this.handleRefreshClick = this.handleRefreshClick.bind(this)
+  }
+
+  componentWillMount() {
+    console.log("HERE")
+    this.props.dispatch(startup())
   }
 
   handleChange(nextReddit) {
