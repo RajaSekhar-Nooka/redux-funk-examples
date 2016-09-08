@@ -1,5 +1,10 @@
+const incrementAsync = dispatch => setTimeout(() => dispatch({type: 'INCREMENT'}), 1000)
+
 export default function counter(state = 0, action) {
   switch (action.type) {
+    case 'INCREMENT_ASYNC':
+      action.sideEffect(incrementAsync)
+      return state
     case 'INCREMENT':
       return state + 1
     case 'INCREMENT_IF_ODD':
