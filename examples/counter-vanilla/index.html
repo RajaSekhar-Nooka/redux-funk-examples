@@ -3,7 +3,6 @@
   <head>
     <title>Redux basic example</title>
     <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script>
-      <script src="../../dist/redux-saga.js"></script>
   </head>
   <body>
     <div>
@@ -22,13 +21,18 @@
       //  Reducers
       //
 
-      function counter(state, action) {
-        if (typeof state === 'undefined') {
-          return 0
-        }
+      const incrementAsync = dispatch =>
+                              setTimeout(() => dispatch({type: 'INCREMENT'}), 1000)
+
+      const counter = (state = 0, action) => {
         switch (action.type) {
+          case 'INCREMENT_ASYNC':
+            action.sideEffect(incrementAsync)
+            return state
           case 'INCREMENT':
             return state + 1
+          case 'INCREMENT_IF_ODD':
+            return (state % 2 !== 0) ? state + 1 : state
           case 'DECREMENT':
             return state - 1
           default:
@@ -36,37 +40,23 @@
         }
       }
 
-
-      //////////////////////////////////////////////////////////////////////////
-      //
-      //  Sagas
-      //
-
-      const effects = ReduxSaga.effects
-      const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-      function* incrementAsync() {
-        yield effects.call(delay, 1000)
-        yield effects.put({type: 'INCREMENT'})
-      }
-
-      function* counterSaga() {
-        yield* ReduxSaga.takeEvery('INCREMENT_ASYNC', incrementAsync)
-      }
-
-
       //////////////////////////////////////////////////////////////////////////
       //
       //  Main Setup
       //
 
-      const createSagaMiddleware = ReduxSaga.default
-      const sagaMiddleware = createSagaMiddleware()
+
+
+      const actionSideEffectMiddlewareLite = store => next => action => {
+        action.sideEffect = f => f(store.dispatch.bind(store))
+        return next(action)
+      }
+
       var store = Redux.createStore(
         counter,
-        Redux.applyMiddleware(sagaMiddleware)
+        window.devToolsExtension && window.devToolsExtension(),
+        Redux.applyMiddleware(actionSideEffectMiddlewareLite)
       )
-      sagaMiddleware.run(counterSaga)
 
       var valueEl = document.getElementById('value')
       function render() {
