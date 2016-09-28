@@ -13,7 +13,8 @@
     "shop": "cross-env BABEL_ENV=cjs node examples/shopping-cart/server.js",
     "test-shop": "cross-env BABEL_ENV=cjs babel-node examples/shopping-cart/test/index.js | tap-spec",
     "async": "cross-env BABEL_ENV=cjs node examples/async/server.js",
-    "test-async": "cross-env BABEL_ENV=cjs NODE_ENV=testing babel-node examples/async/test/funks.js | tap-spec"
+    "test-async": "cross-env BABEL_ENV=cjs NODE_ENV=testing babel-node examples/async/test/funks.js | tap-spec",
+    "test": "npm run test-counter && npm run test-cancellable-counter && npm run test-shop && npm run test-async"
   },
   "repository": {
     "type": "git",
