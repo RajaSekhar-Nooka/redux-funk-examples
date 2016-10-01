@@ -1,7 +1,7 @@
 # redux-funk-examples
 > forked from [redux-saga](https://github.com/yelouafi/redux-saga)
 
-Examples of using [redux-funk](https://github.com/mheiber/redux-funk).
+Examples of using [redux-funk](https://github.com/mheiber/redux-funk) for asynchronous effects in Redux apps. You can compare these side-by-side with the [Redux Saga examples](https://github.com/yelouafi/redux-saga#building-examples-from-sources).
 
 ```sh
 $ npm install
